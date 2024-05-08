@@ -1,0 +1,89 @@
+//------------------------------------------------
+//--- 010 Editor v14.0.1 Binary Template
+//
+//      File: 
+//   Authors: 
+//   Version: 
+//   Purpose: 
+//  Category: 
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+enum<uint32> PACKK
+{
+	// NOTE: we keep PACKK_Deprecated* symbols here to maintain the same 
+	// enum values for non-deprecated PACKK_* symbols.
+
+	PACKK_Deprecated01,			// deprecated
+	PACKK_Deprecated02,			// deprecated
+
+	PACKK_Goi,					// game object instance
+
+	PACKK_Deprecated03,			// deprecated
+	PACKK_Deprecated04,			// deprecated
+
+	PACKK_OidTable,				// oid table
+	PACKK_EnumsSigSection,		// Enums Signature
+	PACKK_Template,				// A Template section, may contain a Gr2, vgm or FX template
+	PACKK_FileStats,			// A section that contains information such as how many template sections are in the world file.
+	PACKK_AtomMaps,				// A section containing atom maps to map atom ids to specific int values
+	PACKK_DebugAtomNames,   	// A section that maps atom ids to strings (used only for debugging)
+	PACKK_GoClassSection,   	// A section that contains information on each go class used in this world (class name, signature and class id)
+	PACKK_EarlyWorldDataSection,
+	PACKK_StringTableSection,	// A section for string table information
+	PACKK_SubsystemAttributes,	// A section that contains properties for subsystems to use
+	PACKK_LoadScreenAssets,		// A section for packing all the assets that the fancy loading screen needs.
+
+	PACKK_Max,
+	PACKK_Nil = -1,
+};
+enum<int32> ETemplateRefKind
+{
+    ETemplateRefKind_Grm, // Granny Model
+    ETemplateRefKind_Vgm, // Vector Graphics Model
+    ETemplateRefKind_FX, // FX
+    ETemplateRefKind_Texture, // Texture
+};
+enum<int32> EPixelFormat
+{
+	EPixelFormat_RGBA8888,
+	EPixelFormat_RGB888,
+
+	EPixelFormat_ARGB8888,
+
+	EPixelFormat_S3TC,
+	EPixelFormat_S3TCWiiSwizzled,
+	EPixelFormat_S3TCXbox360Swizzled,
+};
+enum<ubyte> bool
+{
+    False,
+    True,
+};
+enum<uint32> EPHASE_TYPE
+{
+    EPT_Basic,
+};
+enum<uint32> COMPONENT_TYPE
+{
+	CT_TextureEmitter,
+	CT_ScreenShake,
+	CT_ModelEmitter,
+	CT_Audio,
+	CT_RibbonEmitter,
+	CT_SunRay,
+	CT_ProjectedCloud,
+	CT_MoverSpin,
+	CT_MoverDirectional,
+	CT_MoverSpread,
+	CT_TextureParticleEmitter,
+	CT_ModelParticleEmitter,
+	CT_RibbonParticleEmitter,
+	CT_Max,
+	CT_Nil = -1
+};
+struct cString{
+    ubyte length;
+    char String[length];
+};
