@@ -1,0 +1,379 @@
+//------------------------------------------------
+//--- 010 Editor v13.0.1 Binary Template
+//
+//      File: 
+//   Authors: 
+//   Version: 
+//   Purpose: 
+//  Category: 
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+#include "bgw_enums.bt"
+BigEndian();
+struct tex {
+    int32 packedSize;
+    char TagLCTX[4]; //skipped
+    int32 texFormatVersion;
+    cString textureName;
+    EPixelFormat pixelFormat;
+    bool usesAlpha;
+    int32 mipmapLevelCount;
+    local int i = 0;
+    for (i = 0; i < mipmapLevelCount; i++)
+    {
+        struct mipmap {
+            int32 width;
+            int32 height;
+            int32 pixelByteCount;
+            ubyte pixelData[pixelByteCount];
+         }MipMap<name="MipMap">;
+     }
+};
+struct Header {
+    uint32 unk;
+    uint32 count;
+};
+struct typeSeven{
+};
+struct typeTen{
+    uint32 unk;
+    uint32 count;
+    cString strings[count]<optimize=false>;
+};
+struct Section {
+    PACKK type;
+    uint32 size;
+    local string name;
+    readSection(type, size, name);
+};
+
+struct bgw {
+    Header header<optimize=false>;
+    Section Sections[header.count]<optimize=false,name=name>;
+}BGW;
+
+void readSection(PACKK type, int size, string& name)
+{
+    switch (type)
+    {
+        case (PACKK_FileStats):
+        {
+            struct FileStats {
+                int32 fileStatsSectionVer;
+                int32 enumSigSectionCount<comment="Unused">;
+                int32 numSubsystemAttributes;
+                int32 LoadScreenAssetsSectionCount<comment="Unused">;
+                int32 goClassSigSectionCount<comment="Unused">;
+                int32 numTemplateSections;
+                int32 numGameObejctInstances;
+                int32 oidTableCount<comment="Unused">;
+                int32 atomMapsSectionCount<comment="Unused">;
+                int32 debugAtomNameSectionCount<comment="Unused">;
+                int32 stringTableSection<comment="Unused">;
+            }filestats<name="PACKK_FileStats",bgcolor=cDkGreen>;
+            name = "PACKK_FileStats";
+            break;
+        }
+        case (PACKK_GoClassSection):
+        {
+            struct GoClassSection
+            {
+                int32 sectionVer;
+                int32 goClassInfoCount;
+                local int i;
+                for (i = 0; i < goClassInfoCount; i++)
+                {
+                    struct goClass {
+                        uint32 goClassID;
+                        cString className;
+                        ubyte sigBuf[16];
+                    }gc<name=className.String,optimize=false>;
+                }
+            }gcs<name="GoClassSection",optimize=false,bgcolor=cDkBlue>;
+            name = "GoClassSection";
+            break;
+        }
+        case (PACKK_Template):
+        {
+            struct Template {
+                int32 thisTemplateSectionVersion;
+                struct CManifest {
+                    int32 manifestFormatVersion;
+                    int32 numTemplateRefs;
+                    local int j;
+                    for (j = 0; j < numTemplateRefs; j++)
+                    {
+                        ETemplateRefKind TRK;
+                        int32 ti;
+                    }
+                }cmanifest<name="CManifest">;
+                ETemplateRefKind trk;  
+                              
+                switch (trk)
+                {
+                    case (ETemplateRefKind_Texture):
+                    {
+                        tex Texture<optimize=false,name=textureName.String>;
+                        name = "ETemplateRefKind_Texture";
+                        break;
+                    }
+                    case (ETemplateRefKind_Grm):
+                    {
+                        struct model{
+                            int32 meshesAtomMapID;
+                            int32 animsAtomMapID;
+                            int32 animTagsAtomMapID;
+                            int32 cbGrannyFile;
+                            ubyte abGrannyFile[cbGrannyFile];
+                        }Model<name="ETemplateRefKind_Grm">;
+                        name = "ETemplateRefKind_Grm";
+                        break;
+                    }/*
+                    case (ETemplateRefKind_Vgm):
+                    {
+                        struct vgm {
+                            int32 vgmTemplateVersion;
+                            string name;
+                            int32 initialCapacity;
+                            local int ipshader;
+                            for (ipshader = 0; ipshader < initialCapacity; ipshader++)
+                            {
+                                struct Textures
+                                {
+                                    float m_dx;
+                                    float m_dy;
+                                    int m_dxPad;
+                                    int m_dyPad;
+                                    ubyte m_ab[m_dxPad * m_dyPad * 4];
+                                }textures<name="Textures_VGM",optimize=false>;
+                            }
+                            int32 intialCapacityGrad;
+                            local int ipshaderGrad;
+                            for (ipshaderGrad = 0; ipshaderGrad < intialCapacityGrad; ipshaderGrad++)
+                            {
+                                struct Gradient
+                                {
+                                    float m_dx;
+                                    ubyte m_ab[m_dx * 4];
+                                }gradient<name="Gradient_VGM",optimize=false>;
+                            }
+                            struct Color {
+                                ubyte R;
+                                ubyte G;
+                                ubyte B;
+                                ubyte A;
+                            }color<name="Color">;
+                            struct bound {
+                                float xMin;
+                                float yMin;
+                                float xMax;
+                                float yMax;
+                            }Bound<name="Bounding Box">;
+                            float FPS;
+                            int numLabels;
+                            local int i;
+                            for (i = 0; i < numLabels; i++) {
+                                struct label {
+                                    string SubClipLabelName;
+                                    int SubCliplabelID;
+                                }Label<name="Sub Clip Label Names",optimize=false>;
+                            }
+                            int movieClipCount;
+                            int clipAssCount;
+                            local int imc;
+                            for (imc = 0; imc < movieClipCount; imc++)
+                            {
+                                struct movieClip {
+                                    string name;
+                                    int ID;
+                                    int maxAppCount;
+                                    int m_depthCount;
+                                    int subClipCount;
+                                    local int isc;
+                                    for (isc = 0; imc < subClipCount; isc++)
+                                    {
+                                        struct CSubClip {
+                                            //cannot go from here, need runtime info </3
+                                        }cSubClip<optimize=false,name="CSubClip">;
+                                    }
+                                }MovieClip<name="MovieClip",optimize=false>;
+                            }
+                        }VGM<name="ETemplateRefKind_Vgm",optimize=false>;
+                        break;
+                    }*/
+                    case (ETemplateRefKind_FX):
+                    {
+                        struct fx {
+                            uint32 dataSize;
+                            LittleEndian();
+                            int32 fxFormatVersion;
+                            if (fxFormatVersion != 1001){
+                                ubyte file[dataSize-4];
+                                BigEndian();
+                                break;
+                            }
+                            cString m_fxName<comment="NOT USED IN FINAL">;
+                            uint32 cfxphaset;
+                            local int ifxphaset;
+	                        for (ifxphaset = 0; ifxphaset < cfxphaset; ++ifxphaset)
+                            {
+                                EPHASE_TYPE phasetype;
+                                struct template
+                                {
+                                    float m_tStart;
+                                    float m_tEnd;
+                                    uint32 m_cLoops;
+                                    uint32 m_iphaseGoto;
+                                }fxphase<optimize=false,name="FXPhaseTemplate">;
+                            }
+                            uint32 cfxcomponent;
+                            local int ifxcomponent;
+	                        for (ifxcomponent = 0; ifxcomponent < cfxcomponent; ++ifxcomponent)
+                            {
+                                COMPONENT_TYPE componenttype;
+                                struct FXComponentTemplate
+                                {
+                                    float m_tStart;
+                                    float m_tEnd;
+                                    float m_iRenderOrder;
+                                }fxcomponenttemplate<name="FXComponentTemplate">;
+                            }
+                        }FX<name="ETemplateRefKind_FX",optimize=false>;
+                        ubyte otherData[FX.dataSize - sizeof(FX) + 4];
+                        BigEndian();
+                        name="ETemplateRefKind_FX";
+                        break;
+                    }
+                    default:
+                    {
+                        ubyte file[size - sizeof(cmanifest)-8];
+                        break;
+                    }
+                }
+            }temp<name="PACKK_Template",optimize=false,bgcolor=cDkAqua>;
+            break;
+        }/*
+        case (PACKK_Goi):
+        {
+            struct PACKK_Goi {
+                int32 goiVer;
+                uint32 goClassId;
+                cString debugGoName<comment="NOT USED IN FINAL">;
+                
+            }packk_goi<name="PACKK_Goi",optimize=false>;
+        }*/
+        case (PACKK_EnumsSigSection):
+        {
+            struct PACKK_EnumsSigSection {
+                int32 iEnumsSigSectionVer;
+                ubyte enumSigBuff[16];
+            }enumssigsection<name="PACKK_EnumsSigSection",optimize=false,bgcolor=cLtAqua>;
+            name = "PACKK_EnumsSigSection";
+            break;
+        }
+        case (PACKK_AtomMaps):
+        {
+            struct PACKK_AtomMaps {
+                int32 atomMapSectionVer;
+                int32 m_metaAtomMapId;
+                int32 numAtomMaps;
+                local int atomMapIdx;
+	            for (atomMapIdx = 0; atomMapIdx < numAtomMaps; ++atomMapIdx)
+	            {	
+                    struct CAtomMap {
+                        int m_atomMapID;
+                        int32 numAtomsMapped;
+                        local int atomIdx;
+                        for (atomIdx = 0; atomIdx < numAtomsMapped; ++atomIdx) {
+                            struct atomData {
+                                int32 AtomID;
+                                int32 numsIntMappedTo;
+                                int32 value[numsIntMappedTo];
+                            }AtomData<name="atomData",optimize=false>;
+                        }
+                    }catommap<name="CAtomMap",optimize=false>;
+	            }
+                
+            }atommaps<name="PACKK_AtomMaps",optimize=false>;
+            name = "PACKK_AtomMaps";
+            break;
+        }
+        case (PACKK_StringTableSection):
+        {
+            struct PACKK_StringTableSection {
+                int32 sectionVer;
+                int32 worldStringTableVersion;
+                int32 m_atommapID;
+            }stringtablesection<name="PACKK_StringTableSection",bgcolor=cYellow>;
+            name = "PACKK_StringTableSection";
+            break;
+        }
+        case (PACKK_OidTable): 
+        {
+            struct PACKK_OidTable {
+                local int relPos;
+                int32 iOidTableSectionVer;
+                int32 cRelationships;
+                local int iRelationship;
+                for (iRelationship = 0; iRelationship < cRelationships; iRelationship++)
+                {
+                    struct relationships {
+                        int32 goIdx;
+                        int32 parentRelationshipIdx;
+                        int32 firstChildRelationshipIdx;
+                        int32 lastChildRelationshipIdx;
+                    }Relationships<name="Relationships",optimize=false>;
+                }
+                int32 iIndexIntoRelationshipsTable[cRelationships];
+                int32 cOids;
+                struct OID {
+                    int iFirstGoWithOidIdx;
+                    int iLastGoWithOidIdx;
+                }oid[cOids]<name="idx">;
+                struct OIDs {
+                    int32 EOid;
+                    cString name;
+                }oids[cOids]<name="OIDs",optimize=false,name=name.String>;
+                
+            }oidtable<name="PACKK_OidTable",optimize=false,bgcolor=cSilver>;
+            name = "PACKK_OidTable";
+            break;
+        }
+        case (PACKK_SubsystemAttributes):
+        {
+            struct PACKK_SubsystemAttributes {
+                int32 iSubSystemAttributesVer;
+                int32 shaderLimit;
+            }ssatt<name="PACKK_SubsystemAttributes",bgcolor=cDkBlue>;
+            name = "PACKK_SubsystemAttributes";
+            break;
+        }
+        case (PACKK_LoadScreenAssets):
+        {
+            struct PACKK_LoadScreenAssets {
+                int32 loadingScreenSectionVersion;
+                tex Texture[8]<optimize=false,name=textureName.String>;
+            }lsa<name = "PACKK_LoadScreenAssets",optimize=false,bgcolor=0xcd32cd>;
+            name = "PACKK_LoadScreenAssets";
+            break;
+        }
+        case (PACKK_DebugAtomNames):
+        {
+            struct PACKK_DebugAtomNames {
+                int32 debugAtomNamesSectionVer;
+                int32 numAtomNames;
+                cString atomNames[numAtomNames]<name=String,optimize=false>;
+            }dan<optimize=false,name="PACKK_DebugAtomNames",bgcolor=cRed>;
+            name = "PACKK_DebugAtomNames";
+            break;
+        }
+        default:
+        {
+            ubyte file[size];
+            name = "Default";
+            break;   
+        }
+    }
+}
