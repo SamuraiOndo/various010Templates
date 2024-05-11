@@ -1,12 +1,12 @@
 //------------------------------------------------
 //--- 010 Editor v13.0.1 Binary Template
 //
-//      File: 
-//   Authors: 
+//      File: bgw.bt
+//   Authors: Violet
 //   Version: 
-//   Purpose: 
+//   Purpose: bgw file editor. only for uncompressed files.
 //  Category: 
-// File Mask: 
+// File Mask: *.bgw
 //  ID Bytes: 
 //   History: 
 //------------------------------------------------
@@ -72,7 +72,7 @@ void readSection(PACKK type, int size, string& name)
                 int32 atomMapsSectionCount<comment="Unused">;
                 int32 debugAtomNameSectionCount<comment="Unused">;
                 int32 stringTableSection<comment="Unused">;
-            }filestats<name="PACKK_FileStats">;
+            }filestats<name="PACKK_FileStats",bgcolor=cDkGreen>;
             name = "PACKK_FileStats";
             break;
         }
@@ -91,7 +91,7 @@ void readSection(PACKK type, int size, string& name)
                         ubyte sigBuf[16];
                     }gc<name=className.String,optimize=false>;
                 }
-            }gcs<name="GoClassSection",optimize=false>;
+            }gcs<name="GoClassSection",optimize=false,bgcolor=cDkBlue>;
             name = "GoClassSection";
             break;
         }
@@ -116,7 +116,7 @@ void readSection(PACKK type, int size, string& name)
                     case (ETemplateRefKind_Texture):
                     {
                         tex Texture<optimize=false,name=textureName.String>;
-                        name = "Texture";
+                        name = "ETemplateRefKind_Texture";
                         break;
                     }
                     case (ETemplateRefKind_Grm):
@@ -202,7 +202,7 @@ void readSection(PACKK type, int size, string& name)
                             }
                         }VGM<name="ETemplateRefKind_Vgm",optimize=false>;
                         break;
-                    }
+                    }*/
                     case (ETemplateRefKind_FX):
                     {
                         struct fx {
@@ -240,17 +240,19 @@ void readSection(PACKK type, int size, string& name)
                                     float m_iRenderOrder;
                                 }fxcomponenttemplate<name="FXComponentTemplate">;
                             }
-                        }FX<name="ETemplateRefKind_FX">;
+                        }FX<name="ETemplateRefKind_FX",optimize=false>;
+                        ubyte otherData[FX.dataSize - sizeof(FX) + 4];
                         BigEndian();
+                        name="ETemplateRefKind_FX";
                         break;
-                    }*/
+                    }
                     default:
                     {
                         ubyte file[size - sizeof(cmanifest)-8];
                         break;
                     }
                 }
-            }temp<name="PACKK_Template">;
+            }temp<name="PACKK_Template",optimize=false,bgcolor=cDkAqua>;
             break;
         }/*
         case (PACKK_Goi):
@@ -267,7 +269,7 @@ void readSection(PACKK type, int size, string& name)
             struct PACKK_EnumsSigSection {
                 int32 iEnumsSigSectionVer;
                 ubyte enumSigBuff[16];
-            }enumssigsection<name="PACKK_EnumsSigSection",optimize=false>;
+            }enumssigsection<name="PACKK_EnumsSigSection",optimize=false,bgcolor=cLtAqua>;
             name = "PACKK_EnumsSigSection";
             break;
         }
@@ -304,7 +306,7 @@ void readSection(PACKK type, int size, string& name)
                 int32 sectionVer;
                 int32 worldStringTableVersion;
                 int32 m_atommapID;
-            }stringtablesection<name="PACKK_StringTableSection">;
+            }stringtablesection<name="PACKK_StringTableSection",bgcolor=cYellow>;
             name = "PACKK_StringTableSection";
             break;
         }
@@ -335,7 +337,7 @@ void readSection(PACKK type, int size, string& name)
                     cString name;
                 }oids[cOids]<name="OIDs",optimize=false,name=name.String>;
                 
-            }oidtable<name="PACKK_OidTable",optimize=false>;
+            }oidtable<name="PACKK_OidTable",optimize=false,bgcolor=cSilver>;
             name = "PACKK_OidTable";
             break;
         }
@@ -344,7 +346,7 @@ void readSection(PACKK type, int size, string& name)
             struct PACKK_SubsystemAttributes {
                 int32 iSubSystemAttributesVer;
                 int32 shaderLimit;
-            }ssatt<name="PACKK_SubsystemAttributes">;
+            }ssatt<name="PACKK_SubsystemAttributes",bgcolor=cDkBlue>;
             name = "PACKK_SubsystemAttributes";
             break;
         }
@@ -353,7 +355,7 @@ void readSection(PACKK type, int size, string& name)
             struct PACKK_LoadScreenAssets {
                 int32 loadingScreenSectionVersion;
                 tex Texture[8]<optimize=false,name=textureName.String>;
-            }lsa<name = "PACKK_LoadScreenAssets",optimize=false>;
+            }lsa<name = "PACKK_LoadScreenAssets",optimize=false,bgcolor=0xcd32cd>;
             name = "PACKK_LoadScreenAssets";
             break;
         }
@@ -363,7 +365,7 @@ void readSection(PACKK type, int size, string& name)
                 int32 debugAtomNamesSectionVer;
                 int32 numAtomNames;
                 cString atomNames[numAtomNames]<name=String,optimize=false>;
-            }dan<optimize=false,name="PACKK_DebugAtomNames">;
+            }dan<optimize=false,name="PACKK_DebugAtomNames",bgcolor=cRed>;
             name = "PACKK_DebugAtomNames";
             break;
         }
