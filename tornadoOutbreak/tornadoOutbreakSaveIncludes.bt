@@ -1,0 +1,119 @@
+local int32 collectibleCount;
+enum<int32> EGameWorld {
+    EGameWorld_start_world,
+    EGameWorld_mainmenu_world,
+    EGameWorld_jb_intro,
+    EGameWorld_chickenfarm,
+    EGameWorld_trailerpark,
+    EGameWorld_trailerpark_boss,
+    EGameWorld_training_firesprite,
+    EGameWorld_area51,
+    EGameWorld_area51_boss,
+    EGameWorld_strip,
+    EGameWorld_strip_boss,
+    EGameWorld_amusementpark,
+    EGameWorld_amusementpark_boss,
+    EGameWorld_wellstown,
+    EGameWorld_wellstown_boss,
+    EGameWorld_renfaire,
+    EGameWorld_renfaire_boss,
+    EGameWorld_fishingvillage,
+    EGameWorld_fishingvillage_boss,
+    EGameWorld_tokyo,
+    EGameWorld_Invalid = -1
+};
+enum<int32> EAreaType
+{
+	EAreaType_Standard,
+	EAreaType_Race,
+	EAreaType_Boss,
+	EAreaType_Summary,
+    EAreaType_Invalid = -1
+};
+enum<ubyte> bool {
+    False,
+    True
+};
+enum<int32> ETornadoSkill {
+    ETornadoSkill_Pounce,
+    ETornadoSkill_Ram,
+    ETornadoSkill_Dash,
+    ETornadoSkill_Merge,
+    ETornadoSkill_Vacuum,
+    ETornadoSkill_Jump,
+    ETornadoSkill_Invalid = -1
+};
+enum<int32> ECollectible {
+    ECollectible_FireSprites,
+    ECollectible_Chicken,
+    ECollectible_Invalid = -1
+};
+struct STaAreaStats {
+    EAreaType AreaType;
+    int32 SpriteScore;
+    int32 FireSpritesCur;
+    int32 FireSpritesMax;
+    int32 FireSpritesMin;
+    int32 EarthSpritesCur;
+    int32 EarthSpritesMax;
+    int32 WaterSpritesCur;
+    int32 WaterSpritesMax;
+    int32 StormGatesMissed;
+};
+enum<int32> EAvatarAccoutrements {
+    EAvatarAccoutrements_Invalid = -1,
+    EAvatarAccoutrements_None,
+    EAvatarAccoutrements_Cape
+};
+struct SLevelStats {
+    STaAreaStats BestStats;
+    EGameWorld UnlocksWorld;
+    EGameWorld BossWorld;
+    bool IsUnlocked;
+    bool IsComplete;
+    bool HasOutroMoviePlayed;
+    ubyte pad<hidden=true>;
+    float BestTime;
+    int32 Rank;
+    int32 FailureCount;
+};
+struct CAutoTimer {
+    float m_tStart;
+    float m_tEnd;
+};
+struct STornadoSkillInfo {
+    ETornadoSkill TornadoSkill;
+    float TLastUsed;
+    CAutoTimer TimerCooldown;
+    bool enabled;
+    ubyte pad[3]<hidden=true>;
+    int32 CActived;
+    int32 PgovgmFirstUsed;
+    int32 PgovgmFirstAvailible;
+};
+struct CBonusStats {
+    bool m_isUnlocked;
+    bool m_hasViewed;    
+};
+
+struct SPlayerStats {
+    SLevelStats m_levels[20]<optimize=false,bgcolor=cDkGreen>;
+    STornadoSkillInfo m_skills[6]<optimize=false,bgcolor=cDkBlue>;
+    ECollectible m_collectibleTotal[2]<comment="fireSprite, chicken",bgcolor=cLtGray>;
+    CBonusStats m_bonusMaterialStats[82]<bgcolor=cAqua>;
+    EAvatarAccoutrements m_avatarAccoutrement;
+    bool m_hasShownMPRaceTutorial;
+    bool m_hasShownMPBossTutorial;
+    bool m_hasShownMPMoochTutorial;
+    bool m_hasShownDashTutorial;
+    bool m_hasShownStompTutorial;
+    int32 m_savedMasterVolume;
+    int32 m_savedMusicVolume;
+    int32 m_savedSfxVolume;
+    int32 m_savedVoiceVolume;
+    bool m_savedIsSharedViewEnabled;
+    bool m_ssavedIsTimerAlwaysOn;
+    int32 m_savedGammaType;
+    bool m_isXAxisNormal;
+};
+

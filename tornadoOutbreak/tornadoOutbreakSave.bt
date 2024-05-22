@@ -1,0 +1,23 @@
+//------------------------------------------------
+//--- 010 Editor v14.0.1 Binary Template
+//
+//      File: 
+//   Authors: 
+//   Version: 
+//   Purpose: 
+//  Category: 
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+#include "tornadoOutbreakSaveIncludes.bt"
+BigEndian();
+
+struct TASF {
+    char tag4cc[4];
+    uint32 signature;
+    EGameWorld m_lastLevel;
+    EGameWorld m_justUnlocked;
+    SPlayerStats m_playerStats[2]<optimize=false,bgcolor=cPurple>;
+}tasf<name="TASF",bgcolor=cLtRed>;
+ubyte padding[0x2D8]<bgcolor=cRed,hidden=true>;
