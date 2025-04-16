@@ -1,0 +1,207 @@
+//------------------------------------------------
+//--- 010 Editor v14.0.1 Binary Template
+//
+//      File: dbl.bt
+//   Authors: Violet
+//   Version: 1.0.0
+//   Purpose: 
+//  Category: 
+// File Mask: *.dbl, *.dbu
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+
+enum <ushort> ChunkDesc
+{
+    DB_SNGLSOM               = 0x20,
+    DB_SNGLSOMBONE           = 0x21,
+    DB_SOMARRAY              = 0x22,
+    DB_SOMARRAYBONE          = 0x23,
+    DB_COLLISIONSOMARRAY     = 0x24,
+    DB_AISCRIPT              = 0x25,
+    DB_ANIMSCRIPT            = 0x26,
+    DB_DMASNGLSOM            = 0x27,
+    DB_DMASOMARRAY           = 0x28,
+    DB_SOMTEXTUREIDARRAY     = 0x29,
+    DB_INSTANCE              = 0x60,
+    DB_GROUP                 = 0x61,
+    DB_LOD                   = 0x62,
+    DB_EXPANSION_TABLE       = 0x63,
+    DB_PARTICLE_EMITTER      = 0x64,
+    DB_PARTICLE_SOURCE       = 0x65,
+    DB_PARTICLE_EFFECT       = 0x66,
+    DB_TEXTURE_CONTEXT       = 0x67,
+    DB_SCENE_TREE            = 0x68,
+    DB_VIS_REGIONS           = 0x69,
+    DB_SWOOSH_SOURCE         = 0x6A,
+    DB_INSTANCE_GROUP        = 0x6B,
+    DB_SWOOSH_EMITTER        = 0x6C,
+    DB_PALETTE_SET           = 0x81,
+    DB_TEXTURE_SET           = 0x82,
+    DB_TERRAIN_LIST          = 0x83,
+    DB_EMITTER_LIST          = 0x84,
+    DB_EFFECT_LIST           = 0x85,
+    DB_MERGED_TEXTURE_SET    = 0x86,
+    DB_ANIMATED_TEXTURE_SET  = 0x87,
+    DB_PARTICLE_LIST         = 0x88,
+    DB_PARTICLE_SURFACE_LIST = 0x89,
+    DB_SWOOSH_LIST           = 0x8A,
+    DB_SWOOSH_EMITTER_LIST   = 0x8B,
+    DB_WORLD_EMITTERS        = 0x90,
+    DB_WORLD_DISTORTIONS     = 0x91,
+    DB_ANIM_CURVE            = 0x92,
+    DB_MOTION                = 0x100,
+    DB_BONEINFO              = 0x101,
+    DB_MOTION_NAMES          = 0x102,
+    DB_BONE_GROUP_MIRRORS    = 0x103,
+    DB_TEXTURE_NAMES         = 0x104,
+    DB_LIGHTS                = 0x200,
+    DB_NAMED_POINTS          = 0x201,
+    DB_SECTORS               = 0x202,
+    DB_PATHS                 = 0x203,
+    DB_ATTACH_POINTS         = 0x204,
+    DB_INSTANCE_ATTRIBUTES   = 0x209,
+    DB_CURVES                = 0x210,
+    DB_CDB                   = 0x280,
+    DB_ODB                   = 0x281,
+    DB_PDB                   = 0x282,
+    DB_CPH                   = 0x283,
+    DB_NAV                   = 0x284,
+    DB_XBOX_DXD              = 0x290,
+    DB_SOUNDBANK_3D          = 0x300,
+    DB_SOUNDBANK_2D          = 0x301,
+    DB_SOUNDBANK_MOD         = 0x302,
+    DB_XML_SOURCE            = 0x400,
+    DB_OA_SOURCE             = 0x401,
+    DB_ENV_BINARY            = 0x402,
+    DB_CUT_BINARY            = 0x403,
+    DB_CONTEXT_BINARY        = 0x404,
+    DB_FILESTREAM            = 0x500,
+    DB_SOUNDSOURCE           = 0x600,
+    DB_SOUNDFIELD            = 0x601,
+    DB_WATER                 = 0x610,
+    DB_GLASS                 = 0x620,
+    DB_HALO                  = 0x630,
+    DB_STATIONARYCAM         = 0x631,
+    DB_BLOOM                 = 0x632,
+    DB_FILENAME_CHUNK        = 0x998,
+    DB_SKIP_CHUNK            = 0x999,
+    ChunkDesc_Invalid        = -1
+};
+
+string ChunkDescToString(ChunkDesc val) {
+    switch (val) {
+        case DB_SNGLSOM:               return "DB_SNGLSOM";
+        case DB_SNGLSOMBONE:           return "DB_SNGLSOMBONE";
+        case DB_SOMARRAY:              return "DB_SOMARRAY";
+        case DB_SOMARRAYBONE:          return "DB_SOMARRAYBONE";
+        case DB_COLLISIONSOMARRAY:     return "DB_COLLISIONSOMARRAY";
+        case DB_AISCRIPT:              return "DB_AISCRIPT";
+        case DB_ANIMSCRIPT:            return "DB_ANIMSCRIPT";
+        case DB_DMASNGLSOM:            return "DB_DMASNGLSOM";
+        case DB_DMASOMARRAY:           return "DB_DMASOMARRAY";
+        case DB_SOMTEXTUREIDARRAY:     return "DB_SOMTEXTUREIDARRAY";
+        case DB_INSTANCE:              return "DB_INSTANCE";
+        case DB_GROUP:                 return "DB_GROUP";
+        case DB_LOD:                   return "DB_LOD";
+        case DB_EXPANSION_TABLE:       return "DB_EXPANSION_TABLE";
+        case DB_PARTICLE_EMITTER:      return "DB_PARTICLE_EMITTER";
+        case DB_PARTICLE_SOURCE:       return "DB_PARTICLE_SOURCE";
+        case DB_PARTICLE_EFFECT:       return "DB_PARTICLE_EFFECT";
+        case DB_TEXTURE_CONTEXT:       return "DB_TEXTURE_CONTEXT";
+        case DB_SCENE_TREE:            return "DB_SCENE_TREE";
+        case DB_VIS_REGIONS:           return "DB_VIS_REGIONS";
+        case DB_SWOOSH_SOURCE:         return "DB_SWOOSH_SOURCE";
+        case DB_INSTANCE_GROUP:        return "DB_INSTANCE_GROUP";
+        case DB_SWOOSH_EMITTER:        return "DB_SWOOSH_EMITTER";
+        case DB_PALETTE_SET:           return "DB_PALETTE_SET";
+        case DB_TEXTURE_SET:           return "DB_TEXTURE_SET";
+        case DB_TERRAIN_LIST:          return "DB_TERRAIN_LIST";
+        case DB_EMITTER_LIST:          return "DB_EMITTER_LIST";
+        case DB_EFFECT_LIST:           return "DB_EFFECT_LIST";
+        case DB_MERGED_TEXTURE_SET:    return "DB_MERGED_TEXTURE_SET";
+        case DB_ANIMATED_TEXTURE_SET:  return "DB_ANIMATED_TEXTURE_SET";
+        case DB_PARTICLE_LIST:         return "DB_PARTICLE_LIST";
+        case DB_PARTICLE_SURFACE_LIST: return "DB_PARTICLE_SURFACE_LIST";
+        case DB_SWOOSH_LIST:           return "DB_SWOOSH_LIST";
+        case DB_SWOOSH_EMITTER_LIST:   return "DB_SWOOSH_EMITTER_LIST";
+        case DB_WORLD_EMITTERS:        return "DB_WORLD_EMITTERS";
+        case DB_WORLD_DISTORTIONS:     return "DB_WORLD_DISTORTIONS";
+        case DB_ANIM_CURVE:            return "DB_ANIM_CURVE";
+        case DB_MOTION:                return "DB_MOTION";
+        case DB_BONEINFO:              return "DB_BONEINFO";
+        case DB_MOTION_NAMES:          return "DB_MOTION_NAMES";
+        case DB_BONE_GROUP_MIRRORS:    return "DB_BONE_GROUP_MIRRORS";
+        case DB_TEXTURE_NAMES:         return "DB_TEXTURE_NAMES";
+        case DB_LIGHTS:                return "DB_LIGHTS";
+        case DB_NAMED_POINTS:          return "DB_NAMED_POINTS";
+        case DB_SECTORS:               return "DB_SECTORS";
+        case DB_PATHS:                 return "DB_PATHS";
+        case DB_ATTACH_POINTS:         return "DB_ATTACH_POINTS";
+        case DB_INSTANCE_ATTRIBUTES:   return "DB_INSTANCE_ATTRIBUTES";
+        case DB_CURVES:                return "DB_CURVES";
+        case DB_CDB:                   return "DB_CDB";
+        case DB_ODB:                   return "DB_ODB";
+        case DB_PDB:                   return "DB_PDB";
+        case DB_CPH:                   return "DB_CPH";
+        case DB_NAV:                   return "DB_NAV";
+        case DB_XBOX_DXD:              return "DB_XBOX_DXD";
+        case DB_SOUNDBANK_3D:          return "DB_SOUNDBANK_3D";
+        case DB_SOUNDBANK_2D:          return "DB_SOUNDBANK_2D";
+        case DB_SOUNDBANK_MOD:         return "DB_SOUNDBANK_MOD";
+        case DB_XML_SOURCE:            return "DB_XML_SOURCE";
+        case DB_OA_SOURCE:             return "DB_OA_SOURCE";
+        case DB_ENV_BINARY:            return "DB_ENV_BINARY";
+        case DB_CUT_BINARY:            return "DB_CUT_BINARY";
+        case DB_CONTEXT_BINARY:        return "DB_CONTEXT_BINARY";
+        case DB_FILESTREAM:            return "DB_FILESTREAM";
+        case DB_SOUNDSOURCE:           return "DB_SOUNDSOURCE";
+        case DB_SOUNDFIELD:            return "DB_SOUNDFIELD";
+        case DB_WATER:                 return "DB_WATER";
+        case DB_GLASS:                 return "DB_GLASS";
+        case DB_HALO:                  return "DB_HALO";
+        case DB_STATIONARYCAM:         return "DB_STATIONARYCAM";
+        case DB_BLOOM:                 return "DB_BLOOM";
+        case DB_FILENAME_CHUNK:        return "DB_FILENAME_CHUNK";
+        case DB_SKIP_CHUNK:            return "DB_SKIP_CHUNK";
+        case ChunkDesc_Invalid:        return "ChunkDesc_Invalid";
+        default:                       return "Unknown ChunkDesc";
+    }
+}
+
+
+//local uint32 IS_TAK_JUJU_CHALLENGE = true; // not needed it seems, but here just in case
+struct  ts_DBFileHdr
+{
+	char		cSkipCount[8];	// for variable-size text field at start of .dbl file. see comments in _dblGetFileHdr in DBFile.cpp
+	char		cID[8];	// export platform, or "DB" for generic data
+	uint32	    u32Version;
+	uint32		u32FileFlags;
+	uint32		u32Chunks;
+	uint32		u32MaxChunkSize;
+};
+
+struct ts_DBChunkHdr
+{
+   ChunkDesc  u16Type;
+   ushort  u16Flags;
+   uint32  u32Size;
+   ushort  u16Version;
+   char    cName[32]; // if non existent, it is 0xFEEDBEEF
+   char    filler[22];
+};
+
+struct ts_DBChunk {
+    ts_DBChunkHdr d_chunkHeader<optimize=false,read=ChunkDescToString(u16Type)>;
+    ubyte file[d_chunkHeader.u32Size];
+};
+
+struct dbl {
+    //if (IS_TAK_JUJU_CHALLENGE)
+    //{
+        char pointer[4]<hidden=true>;
+        FSeek(Atoi(pointer));
+    //}
+    ts_DBFileHdr d_fileHeader<optimize=false>;
+    ts_DBChunk d_chunkHeader[d_fileHeader.u32Chunks]<optimize=false,read=ChunkDescToString(d_chunkHeader.u16Type)>;
+}DBL;
