@@ -1,0 +1,73 @@
+//------------------------------------------------
+//--- 010 Editor v15.0.2 Binary Template
+//
+//      File: 
+//   Authors: Violet <3
+//   Version: 1.0
+//   Purpose: parse ps2 memory card .ico files
+//  Category: 
+// File Mask: *.ico
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+LittleEndian();
+local int isCompressed;
+struct Header {
+    uint32 magic;
+    uint32 anim_shapes_count;
+    uint32 tex_type;
+    isCompressed = tex_type & 0x08;
+    float unk;
+    uint32 numOfVerts;
+};
+//quat, /4096
+struct Verts {
+    int16 x, y, z, w;
+};
+//quat, /4096
+struct UV {
+    int16 x, y;
+};
+struct RGBA {
+    ubyte r,g,b,a;
+};
+struct KeyFrame {
+    float time, value;
+};
+struct Frame {
+    uint32 shapeID;
+    uint32 numKeys;
+    KeyFrame keys[numKeys]<optimize=false>;
+};
+struct AnimHeader {
+    uint32 magic;
+    uint32 frameLength;
+    float animSpeed;
+    uint32 playOffset;
+    uint32 frameCount;
+    Frame frames[frameCount]<optimize=false>;
+};
+// 
+struct texData {
+    ushort b : 5;
+    ushort g : 5;
+    ushort r : 5;
+    ushort p : 1;
+};
+struct animShapes {
+    Verts verts[header.numOfVerts]<optimize=false>;
+};
+struct ICO {
+    Header header;
+    animShapes modelData[header.anim_shapes_count]<optimize=false>;
+    Verts norms[header.numOfVerts]<optimize=false>;
+    UV uvs[header.numOfVerts]<optimize=false>;
+    RGBA vertColors[header.numOfVerts]<optimize=false>;
+    AnimHeader animHeader<optimize=false>;
+    if (!isCompressed) {
+        texData textureData[128 * 128];
+    }
+    else {
+        ubyte compressedTexture[FSize() - FTell()];
+    };
+}ico;
