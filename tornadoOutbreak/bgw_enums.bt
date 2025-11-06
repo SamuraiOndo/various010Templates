@@ -87,3 +87,39 @@ struct cString{
     ubyte length;
     char String[length];
 };
+
+
+enum<uint32> KOK
+{
+	KOK_Add,
+	KOK_Remove,
+	KOK_Update,
+	KOK_PlaySound,
+
+	KOK_Max,
+	KOK_Nil = -1
+};
+
+
+enum<uint32> SHADERK
+{
+	SHADERK_Fill,
+	SHADERK_Textured,
+	SHADERK_Gradient,
+	SHADERK_Line,
+
+	SHADERK_Max,
+	SHADERK_Nil = -1,
+};
+enum<uint32> PRIMK
+{
+	PRIMK_Tri,
+	PRIMK_TriStrip,
+	PRIMK_TriFan,
+	PRIMK_Line,
+	PRIMK_LineStrip,
+	PRIMK_LineLoop,
+
+	PRIMK_Max,
+	PRIMK_Nil = -1,
+};

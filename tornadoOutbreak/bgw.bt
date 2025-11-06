@@ -31,6 +31,19 @@ struct tex {
          }MipMap<name="MipMap">;
      }
 };
+struct CString {
+    int count;
+    char str[count];
+};
+struct Vector2f {
+    float x, y;
+};
+struct Matrix3SO {
+    float aag[6];
+};
+struct RGBAF {
+    float r, g, b, a;
+};
 struct Header {
     uint32 unk;
     uint32 count;
@@ -130,15 +143,18 @@ void readSection(PACKK type, int size, string& name)
                         }Model<name="ETemplateRefKind_Grm">;
                         name = "ETemplateRefKind_Grm";
                         break;
-                    }/*
+                    }
                     case (ETemplateRefKind_Vgm):
                     {
                         struct vgm {
                             int32 vgmTemplateVersion;
                             string name;
-                            int32 initialCapacity;
+                            int32 fileSize;
                             local int ipshader;
-                            for (ipshader = 0; ipshader < initialCapacity; ipshader++)
+                            CString str;
+                            LittleEndian();
+                            int32 texCount;
+                            for (ipshader = 0; ipshader < texCount; ipshader++)
                             {
                                 struct Textures
                                 {
@@ -176,9 +192,9 @@ void readSection(PACKK type, int size, string& name)
                             local int i;
                             for (i = 0; i < numLabels; i++) {
                                 struct label {
-                                    string SubClipLabelName;
+                                    cString SubClipLabelName;
                                     int SubCliplabelID;
-                                }Label<name="Sub Clip Label Names",optimize=false>;
+                                }Label<name=SubClipLabelName.String,optimize=false>;
                             }
                             int movieClipCount;
                             int clipAssCount;
@@ -186,23 +202,144 @@ void readSection(PACKK type, int size, string& name)
                             for (imc = 0; imc < movieClipCount; imc++)
                             {
                                 struct movieClip {
-                                    string name;
+                                    if (ReadUByte() == 255) {
+                                        int intCharCount;
+                                        char name[intCharCount];
+                                    }
+                                    else {
+                                        ubyte charCount;
+                                        char name[charCount];
+                                    };
                                     int ID;
                                     int maxAppCount;
                                     int m_depthCount;
                                     int subClipCount;
                                     local int isc;
-                                    for (isc = 0; imc < subClipCount; isc++)
+                                    for (isc = 0; isc < subClipCount; isc++)
                                     {
                                         struct CSubClip {
-                                            //cannot go from here, need runtime info </3
+                                            int m_label;
+                                            int m_isLooped;
+                                            int keyFrameCount;
+                                            local int ikf;
+                                            for (ikf = 0; ikf < keyFrameCount; ikf++)
+                                            {
+                                                struct CKeyFrame {
+                                                    float m_t;
+                                                    int m_keyOpCount;
+                                                    local int iko;
+                                                    for (iko = 0; iko < m_keyOpCount; iko++) 
+                                                    {
+                                                        struct CKeyOp {
+                                                            KOK kok;
+                                                            switch (kok) {
+                                                                case (KOK_Add):
+                                                                    int id;
+                                                                case (KOK_Update):
+                                                                    int koDepth;
+                                                                    Matrix3SO koMat;
+                                                                    RGBAF multColor;
+                                                                    RGBAF addColor;
+                                                                    break;
+                                                                case (KOK_Remove):
+                                                                    int koDepth;
+                                                                    break;
+                                                                case (KOK_PlaySound):
+                                                                    string koSoundName;
+                                                                    break;
+                                                                default:
+                                                                    break;
+                                                            }
+                                                        }cKeyOp<optimize=false, name="CKeyOp">;
+                                                    }
+                                                }cKeyFrame<optimize=false, name="CKeyFrame">;
+                                            }
                                         }cSubClip<optimize=false,name="CSubClip">;
                                     }
                                 }MovieClip<name="MovieClip",optimize=false>;
+                                }
+                                int vgmShaderCount;
+                                local int ivgmshader;
+                                for (ivgmshader = 0; ivgmshader < vgmShaderCount; ivgmshader++) {
+                                    struct CVgmShader {
+                                        int m_shaderk;
+                                        ubyte R;
+                                        ubyte G;
+                                        ubyte B;
+                                        ubyte A;
+                                        int m_itexture;
+                                        float m_dxLine;
+                                        if (m_shaderk == SHADERK_Textured || m_shaderk == SHADERK_Gradient)
+                                        {
+                                            Matrix3SO m_mat;
+                                        }
+                                    }cVgmShader<name="CVgmShader", optimize=false>;
+                                };
+                                int graphicsCount;
+                                local int igr;
+                                for (igr = 0; igr < graphicsCount; igr++) {
+                                    struct CGraphic 
+                                    { 
+                                        int id;
+                                        int maxSymbolAppCount;
+                                        struct rectf {
+                                            float xMin;
+                                            float yMin;
+                                            float xMax;
+                                            float yMax;
+                                        }Rectf<name="bbox">;
+                                        int primCount;
+                                        local int iprim;
+                                        for (iprim = 0; iprim < primCount; iprim++) {
+                                            struct CPrim { 
+                                                PRIMK m_primk;
+                                                int m_ishader;
+                                                int m_z;
+                                                ubyte m_fstencil;
+                                                int m_cvert;
+                                                local int ivert;
+                                                for (ivert = 0; ivert < m_cvert; ivert++) {
+                                                    Vector2f pvert;
+                                                };
+                                            }cPrim<name="CPrim", optimize=false>;
+                                        };
+                                    }cGraphic<name="CGraphic", optimize=false>;
+                                };
+                                int textCount;
+                                local int itxt;
+                                for (itxt = 0; itxt < textCount; itxt++) 
+                                {
+                                    struct CVgmText {
+                                        int id;
+                                        int maxSymbolAppCount;
+                                        struct RectF {
+                                            float xMin;
+                                            float yMin;
+                                            float xMax;
+                                            float yMax;
+                                        }RECTF<name="bbox">;
+                                        int fontID; //unused
+                                        int height;
+                                        ubyte R;
+                                        ubyte G;
+                                        ubyte B;
+                                        ubyte A;
+                                        int align;
+                                        int wordWrap; //unused
+                                        int multiline; //unused
+                                        int border; //unused
+                                        int maxLength; //unused
+                                        int leftMargin; //unused
+                                        int rightMargin; //unused
+                                        int indent; //unused
+                                        int leadingSpace; //unused
+                                        cString name;
+                                    }cVgmText<name="CVgmText", optimize=false>;
                             }
                         }VGM<name="ETemplateRefKind_Vgm",optimize=false>;
+                        BigEndian();
                         break;
-                    }*/
+                    }
                     case (ETemplateRefKind_FX):
                     {
                         struct fx {
