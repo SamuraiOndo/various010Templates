@@ -99,7 +99,7 @@ void readSection(PACKK type, int size, string& name)
                 for (i = 0; i < goClassInfoCount; i++)
                 {
                     struct goClass {
-                        uint32 goClassID;
+                        uint32 goClassID<format=hex>;
                         cString className;
                         ubyte sigBuf[16];
                     }gc<name=className.String,optimize=false>;
@@ -203,6 +203,7 @@ void readSection(PACKK type, int size, string& name)
                             {
                                 struct movieClip {
                                     if (ReadUByte() == 255) {
+                                        FSeek(FTell() + 1);
                                         int intCharCount;
                                         char name[intCharCount];
                                     }
@@ -391,16 +392,26 @@ void readSection(PACKK type, int size, string& name)
                 }
             }temp<name="PACKK_Template",optimize=false,bgcolor=cDkAqua>;
             break;
-        }/*
+        }
         case (PACKK_Goi):
         {
+            local int stay = FTell();
             struct PACKK_Goi {
                 int32 goiVer;
-                uint32 goClassId;
+                uint32 goClassId<format=hex>;
                 cString debugGoName<comment="NOT USED IN FINAL">;
-                
-            }packk_goi<name="PACKK_Goi",optimize=false>;
-        }*/
+            }packk_goi<name="PACKK_Goi",optimize=false,read=debugGoName.String>;
+            ubyte file[size-(FTell() - stay)];
+            
+            local int q = 0;
+            for (q = 0; q < Sections[3].gcs.goClassInfoCount; q++) {
+                if (Sections[3].gcs.gc[q].goClassID == packk_goi.goClassId) {
+                    name = Sections[3].gcs.gc[q].className.String;
+                    break;
+                }
+            }
+            break;
+        }
         case (PACKK_EnumsSigSection):
         {
             struct PACKK_EnumsSigSection {
