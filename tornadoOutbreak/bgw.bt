@@ -338,6 +338,7 @@ void readSection(PACKK type, int size, string& name)
                                     }cVgmText<name="CVgmText", optimize=false>;
                             }
                         }VGM<name="ETemplateRefKind_Vgm",optimize=false>;
+                        name="ETemplateRefKind_Vgm";
                         BigEndian();
                         break;
                     }
