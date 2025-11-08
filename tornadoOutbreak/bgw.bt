@@ -45,7 +45,7 @@ struct RGBAF {
     float r, g, b, a;
 };
 struct Header {
-    uint32 unk;
+    uint32 thisWorldFileFormatVer;
     uint32 count;
 };
 struct typeSeven{

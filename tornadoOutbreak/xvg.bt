@@ -1,0 +1,368 @@
+//------------------------------------------------
+//--- 010 Editor v14.0.1 Binary Template
+//
+//      File: 
+//   Authors: 
+//   Version: 
+//   Purpose: 
+//  Category: 
+// File Mask: 
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+enum<uint32> PACKK
+{
+	// NOTE: we keep PACKK_Deprecated* symbols here to maintain the same 
+	// enum values for non-deprecated PACKK_* symbols.
+
+	PACKK_Deprecated01,			// deprecated
+	PACKK_Deprecated02,			// deprecated
+
+	PACKK_Goi,					// game object instance
+
+	PACKK_Deprecated03,			// deprecated
+	PACKK_Deprecated04,			// deprecated
+
+	PACKK_OidTable,				// oid table
+	PACKK_EnumsSigSection,		// Enums Signature
+	PACKK_Template,				// A Template section, may contain a Gr2, vgm or FX template
+	PACKK_FileStats,			// A section that contains information such as how many template sections are in the world file.
+	PACKK_AtomMaps,				// A section containing atom maps to map atom ids to specific int values
+	PACKK_DebugAtomNames,   	// A section that maps atom ids to strings (used only for debugging)
+	PACKK_GoClassSection,   	// A section that contains information on each go class used in this world (class name, signature and class id)
+	PACKK_EarlyWorldDataSection,
+	PACKK_StringTableSection,	// A section for string table information
+	PACKK_SubsystemAttributes,	// A section that contains properties for subsystems to use
+	PACKK_LoadScreenAssets,		// A section for packing all the assets that the fancy loading screen needs.
+
+	PACKK_Max,
+	PACKK_Nil = -1,
+};
+enum<int32> ETemplateRefKind
+{
+    ETemplateRefKind_Grm, // Granny Model
+    ETemplateRefKind_Vgm, // Vector Graphics Model
+    ETemplateRefKind_FX, // FX
+    ETemplateRefKind_Texture, // Texture
+};
+enum<int32> EPixelFormat
+{
+	EPixelFormat_RGBA8888,
+	EPixelFormat_RGB888,
+
+	EPixelFormat_ARGB8888,
+
+	EPixelFormat_S3TC,
+	EPixelFormat_S3TCWiiSwizzled,
+	EPixelFormat_S3TCXbox360Swizzled,
+};
+enum<ubyte> bool
+{
+    False,
+    True,
+};
+enum<uint32> EPHASE_TYPE
+{
+    EPT_Basic,
+};
+enum<uint32> COMPONENT_TYPE
+{
+	CT_TextureEmitter,
+	CT_ScreenShake,
+	CT_ModelEmitter,
+	CT_Audio,
+	CT_RibbonEmitter,
+	CT_SunRay,
+	CT_ProjectedCloud,
+	CT_MoverSpin,
+	CT_MoverDirectional,
+	CT_MoverSpread,
+	CT_TextureParticleEmitter,
+	CT_ModelParticleEmitter,
+	CT_RibbonParticleEmitter,
+	CT_Max,
+	CT_Nil = -1
+};
+struct cString{
+    ubyte length;
+    char String[length];
+};
+
+
+enum<uint32> KOK
+{
+	KOK_Add,
+	KOK_Remove,
+	KOK_Update,
+	KOK_PlaySound,
+
+	KOK_Max,
+	KOK_Nil = -1
+};
+
+
+enum<uint32> SHADERK
+{
+	SHADERK_Fill,
+	SHADERK_Textured,
+	SHADERK_Gradient,
+	SHADERK_Line,
+
+	SHADERK_Max,
+	SHADERK_Nil = -1,
+};
+enum<uint32> PRIMK
+{
+	PRIMK_Tri,
+	PRIMK_TriStrip,
+	PRIMK_TriFan,
+	PRIMK_Line,
+	PRIMK_LineStrip,
+	PRIMK_LineLoop,
+
+	PRIMK_Max,
+	PRIMK_Nil = -1,
+};
+struct tex {
+    int32 packedSize;
+    char TagLCTX[4]; //skipped
+    int32 texFormatVersion;
+    cString textureName;
+    EPixelFormat pixelFormat;
+    bool usesAlpha;
+    int32 mipmapLevelCount;
+    local int i = 0;
+    for (i = 0; i < mipmapLevelCount; i++)
+    {
+        struct mipmap {
+            int32 width;
+            int32 height;
+            int32 pixelByteCount;
+            ubyte pixelData[pixelByteCount];
+         }MipMap<name="MipMap">;
+     }
+};
+struct CString {
+    int count;
+    char str[count];
+};
+struct Vector2f {
+    float x, y;
+};
+struct Matrix3SO {
+    float aag[6];
+};
+struct RGBAF {
+    float r, g, b, a;
+};
+struct Header {
+    uint32 thisWorldFileFormatVer;
+    uint32 count;
+};
+struct typeSeven{
+};
+struct typeTen{
+    uint32 unk;
+    uint32 count;
+    cString strings[count]<optimize=false>;
+};
+struct Section {
+    PACKK type;
+    uint32 size;
+    local string name;
+    readSection(type, size, name);
+};
+
+struct vgm {
+    int32 vgmTemplateVersion;
+    string name;
+    int32 fileSize;
+    local int ipshader;
+    CString str;
+    LittleEndian();
+    int32 texCount;
+    for (ipshader = 0; ipshader < texCount; ipshader++)
+    {
+        struct Textures
+        {
+            float m_dx;
+            float m_dy;
+            int m_dxPad;
+            int m_dyPad;
+            ubyte m_ab[m_dxPad * m_dyPad * 4];
+        }textures<name="Textures_VGM",optimize=false>;
+    }
+    int32 intialCapacityGrad;
+    local int ipshaderGrad;
+    for (ipshaderGrad = 0; ipshaderGrad < intialCapacityGrad; ipshaderGrad++)
+    {
+        struct Gradient
+        {
+            float m_dx;
+            ubyte m_ab[m_dx * 4];
+        }gradient<name="Gradient_VGM",optimize=false>;
+    }
+    struct Color {
+        ubyte R;
+        ubyte G;
+        ubyte B;
+        ubyte A;
+    }color<name="Color">;
+    struct bound {
+        float xMin;
+        float yMin;
+        float xMax;
+        float yMax;
+    }Bound<name="Bounding Box">;
+    float FPS;
+    int numLabels;
+    local int i;
+    for (i = 0; i < numLabels; i++) {
+        struct label {
+            cString SubClipLabelName;
+            int SubCliplabelID;
+        }Label<name=SubClipLabelName.String,optimize=false>;
+    }
+    int movieClipCount;
+    int clipAssCount;
+    local int imc;
+    for (imc = 0; imc < movieClipCount; imc++)
+    {
+        struct movieClip {
+            if (ReadUByte() == 255) {
+                FSeek(FTell() + 1);
+                int intCharCount;
+                char name[intCharCount];
+            }
+            else {
+                ubyte charCount;
+                char name[charCount];
+            };
+            int ID;
+            int maxAppCount;
+            int m_depthCount;
+            int subClipCount;
+            local int isc;
+            for (isc = 0; isc < subClipCount; isc++)
+            {
+                struct CSubClip {
+                    int m_label;
+                    int m_isLooped;
+                    int keyFrameCount;
+                    local int ikf;
+                    for (ikf = 0; ikf < keyFrameCount; ikf++)
+                    {
+                        struct CKeyFrame {
+                            float m_t;
+                            int m_keyOpCount;
+                            local int iko;
+                            for (iko = 0; iko < m_keyOpCount; iko++) 
+                            {
+                                struct CKeyOp {
+                                    KOK kok;
+                                    switch (kok) {
+                                        case (KOK_Add):
+                                            int id;
+                                        case (KOK_Update):
+                                            int koDepth;
+                                            Matrix3SO koMat;
+                                            RGBAF multColor;
+                                            RGBAF addColor;
+                                            break;
+                                        case (KOK_Remove):
+                                            int koDepth;
+                                            break;
+                                        case (KOK_PlaySound):
+                                            string koSoundName;
+                                            break;
+                                        default:
+                                            break;
+                                    }
+                                }cKeyOp<optimize=false, name="CKeyOp">;
+                            }
+                        }cKeyFrame<optimize=false, name="CKeyFrame">;
+                    }
+                }cSubClip<optimize=false,name="CSubClip">;
+            }
+        }MovieClip<name="MovieClip",optimize=false>;
+        }
+        int vgmShaderCount;
+        local int ivgmshader;
+        for (ivgmshader = 0; ivgmshader < vgmShaderCount; ivgmshader++) {
+            struct CVgmShader {
+                int m_shaderk;
+                ubyte R;
+                ubyte G;
+                ubyte B;
+                ubyte A;
+                int m_itexture;
+                float m_dxLine;
+                if (m_shaderk == SHADERK_Textured || m_shaderk == SHADERK_Gradient)
+                {
+                    Matrix3SO m_mat;
+                }
+            }cVgmShader<name="CVgmShader", optimize=false>;
+        };
+        int graphicsCount;
+        local int igr;
+        for (igr = 0; igr < graphicsCount; igr++) {
+            struct CGraphic 
+            { 
+                int id;
+                int maxSymbolAppCount;
+                struct rectf {
+                    float xMin;
+                    float yMin;
+                    float xMax;
+                    float yMax;
+                }Rectf<name="bbox">;
+                int primCount;
+                local int iprim;
+                for (iprim = 0; iprim < primCount; iprim++) {
+                    struct CPrim { 
+                        PRIMK m_primk;
+                        int m_ishader;
+                        int m_z;
+                        ubyte m_fstencil;
+                        int m_cvert;
+                        local int ivert;
+                        for (ivert = 0; ivert < m_cvert; ivert++) {
+                            Vector2f pvert;
+                        };
+                    }cPrim<name="CPrim", optimize=false>;
+                };
+            }cGraphic<name="CGraphic", optimize=false>;
+        };
+        int textCount;
+        local int itxt;
+        for (itxt = 0; itxt < textCount; itxt++) 
+        {
+            struct CVgmText {
+                int id;
+                int maxSymbolAppCount;
+                struct RectF {
+                    float xMin;
+                    float yMin;
+                    float xMax;
+                    float yMax;
+                }RECTF<name="bbox">;
+                int fontID; //unused
+                int height;
+                ubyte R;
+                ubyte G;
+                ubyte B;
+                ubyte A;
+                int align;
+                int wordWrap; //unused
+                int multiline; //unused
+                int border; //unused
+                int maxLength; //unused
+                int leftMargin; //unused
+                int rightMargin; //unused
+                int indent; //unused
+                int leadingSpace; //unused
+                cString name;
+            }cVgmText<name="CVgmText", optimize=false>;
+    }
+}VGM<name="ETemplateRefKind_Vgm",optimize=false>;
+BigEndian();
