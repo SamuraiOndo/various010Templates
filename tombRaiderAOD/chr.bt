@@ -1,0 +1,233 @@
+//------------------------------------------------
+//--- 010 Editor v15.0.2 Binary Template
+//
+//      File: chr.bt
+//   Authors: Violet
+//   Version: 
+//   Purpose: 
+//  Category: 
+// File Mask: *.chr
+//  ID Bytes: 
+//   History: 
+//------------------------------------------------
+LittleEndian();
+//------------------------------------------------
+//--- Color Implementation taken from JPG.bt
+local int colorSelect = 0;
+local int colorId = 0;
+local DWORD clr = 0;
+local DWORD jetMap[6*3] = {
+	0x0000cc,0x0000ff,0x0033ff,0x0066ff,0x0099ff,0x00ccff,
+	0x00cccc,0x33ffcc,0x66ff99,0x99ff66,0xccff33,0xffff00,
+	0xffcc00,0xff9900,0xff6600,0xff3300,0xff0000,0xcc0000
+};
+
+void ChangeColor(byte bChangeColor) {
+	if(bChangeColor == 1) {colorSelect++; colorId = 0;}
+	clr = jetMap[(colorSelect%3)*6+(colorId%6)];
+	SetBackColor(clr);
+	colorId++;
+}
+
+//------------------------------------------------
+
+typedef struct {
+    float mat[4];
+}Matrix4[4];
+
+struct Vector4 {
+    float vec[4];
+};
+
+struct COLLIDESPHERE {
+    Vector4 origin;
+    float radius;
+    float pad[3];
+};
+
+enum<int16> _DRAW_PRIMITIVETYPE //actually an int8 but its padded
+{
+  DRAWPT_POINTLIST = 0x1,
+  DRAWPT_LINELIST = 0x2,
+  DRAWPT_LINESTRIP = 0x3,
+  DRAWPT_TRIANGLELIST = 0x4,
+  DRAWPT_TRIANGLESTRIP = 0x5,
+  DRAWPT_TRIANGLEFAN = 0x6,
+};
+
+struct SYS_D3D_SKIN__VECTOR_WEIGHTED
+{
+  int16 px0;
+  int16 py0;
+  int16 pz0;
+  int16 px1;
+  int16 py1;
+  int16 pz1;
+  char bnx0;
+  char bny0;
+  char bnz0;
+  char bnx1;
+  char bny1;
+  char bnz1;
+  char baux0;
+  char bauy0;
+  char bauz0;
+  char bavx0;
+  char bavy0;
+  char bavz0;
+  char baux1;
+  char bauy1;
+  char bauz1;
+  char bavx1;
+  char bavy1;
+  char bavz1;
+  int16 blend;
+  int8 ibone0;
+  int8 ibone1;
+  int16 u;
+  int16 v;
+};
+
+struct SYS_D3D_SKIN__VECTOR_RIGGED
+{
+  int16 px;
+  int16 py;
+  int16 pz;
+  char bnx;
+  char bny;
+  char bnz;
+  char baux;
+  char bauy;
+  char bauz;
+  char bavx;
+  char bavy;
+  char bavz;
+  int16 u;
+  int16 v;
+};
+
+
+struct Header {
+    uint32 magic; // always 0. game will break if not.
+    uint32 texture_ptr;
+    uint32 skeleton_ptr;
+    uint32 unk;
+    uint32 mesh1_ptr;
+    uint32 numBones;
+};
+
+struct IndicesData {
+    uint32 numIndices;
+    int16 indices[numIndices];
+};
+
+struct RunData {
+    uint32 numRuns;
+    struct Elements {  
+        int16 numPrimitive;
+        int16 numIndices;
+        int16 idxIndices;
+        uint16 idxMaterial;
+        int16 idxTextureBump;
+        _DRAW_PRIMITIVETYPE type;
+    }runs[numRuns];
+};
+
+struct SkinData {
+    uint32 unk;
+    uint32 SkinID;
+    uint32 numVectors;
+    SYS_D3D_SKIN__VECTOR_WEIGHTED vectors[numVectors];
+    IndicesData indicesData;
+    RunData runData;
+};
+
+struct RiggedData {
+    ChangeColor(1);
+    int32 unk;
+    int32 flags;
+    int32 meshID;
+    int32 idxBone;
+    int32 idxAnimBone;  
+    int32 numVectors;
+    SYS_D3D_SKIN__VECTOR_RIGGED vectors[numVectors]<optimize=false>;
+    IndicesData indicesData;
+    RunData runData;
+};
+
+struct Mesh {
+    uint32 unk;
+    SkinData skinData;
+};
+
+struct Mesh2 {
+    int32 numChildren;
+    RiggedData riggedData[numChildren]<optimize=false>;
+};
+
+struct SkeletonData(int numBones) {
+    struct BONE {
+        ChangeColor(1);
+        int32 flags;
+        char name[64];
+        int32 boneID;
+        int32 boneIdx;
+        int32 matrixidx;
+        Matrix4 bind;
+        Matrix4 idxAbsBind;
+        Matrix4 pre;
+        Matrix4 post;
+        COLLIDESPHERE sphere;
+        int32 physics_flags;
+        uint32 uParentBone;
+        uint32 pad[2];
+        Vector4 vpad[4];
+    }bones[numBones]<optimize=false>;
+};
+
+struct TextureData {
+    int32 numMaterials;
+    struct Material {
+        ChangeColor(1);
+        int32 flags;
+        int32 numTextures;
+        int32 idxTextures[numTextures];
+    }materials[numMaterials]<optimize=false>;
+    ChangeColor(1);
+    
+    int32 numTextures;
+    struct Texture {
+        ChangeColor(1);
+        uint32 format;
+        uint32 use;
+        uint32 numFrames;
+        uint32 numMipMaps;
+        uint32 width;
+        uint32 height;
+        uint32 numData;
+        uint8  data[numData];
+    }textures[numTextures]<optimize=false>;
+};
+
+struct CHR {
+    ChangeColor(1);
+    Header header;
+    ChangeColor(1);
+    
+    FSeek(header.skeleton_ptr);
+    SkeletonData skelData(header.numBones);
+    ChangeColor(1);
+    
+    FSeek(header.mesh1_ptr);
+    ChangeColor(1);
+    
+    Mesh meshData1<optimize=false>;
+    ChangeColor(1);
+    
+    Mesh2 meshData2<optimize=false>;
+    ChangeColor(1);
+    
+    FSeek(header.texture_ptr);
+    TextureData texData<optimize=false>;
+    
+}chr;
