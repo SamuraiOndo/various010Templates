@@ -1,12 +1,12 @@
 //------------------------------------------------
 //--- 010 Editor v15.0.2 Binary Template
 //
-//      File: chr.bt
-//   Authors: Violet
+//      File: 
+//   Authors: 
 //   Version: 
 //   Purpose: 
 //  Category: 
-// File Mask: *.chr
+// File Mask: 
 //  ID Bytes: 
 //   History: 
 //------------------------------------------------
@@ -111,9 +111,11 @@ struct Header {
     uint32 magic; // always 0. game will break if not.
     uint32 texture_ptr;
     uint32 skeleton_ptr;
-    uint32 unk;
+    uint32 hier_ptr;
     uint32 mesh1_ptr;
     uint32 numBones;
+    uint32 numHierarchy;
+    int32 flags;
 };
 
 struct IndicesData {
@@ -156,7 +158,7 @@ struct RiggedData {
 };
 
 struct Mesh {
-    uint32 unk;
+    uint32 sectionSize;
     SkinData skinData;
 };
 
@@ -182,7 +184,7 @@ struct SkeletonData(int numBones) {
         uint32 uParentBone;
         uint32 pad[2];
         Vector4 vpad[4];
-    }bones[numBones]<optimize=false>;
+    }bones[numBones]<optimize=false,name=name>;
 };
 
 struct TextureData {
@@ -208,10 +210,32 @@ struct TextureData {
         uint8  data[numData];
     }textures[numTextures]<optimize=false>;
 };
+struct Hiearchy(int numHierarchy) {
+    ChangeColor(1);
+    uint32 numNodes;
+    int32 flags;
+    struct Node {
+        string name;
+        // pad until next 0x4.
+        while (FTell() % 4 != 0)
+            ubyte pad<hidden=true>;
+        uint32 meshID;
+        int32 flags;
+        // pad until next 0x10
+        while (FTell() % 16 != 0)
+            ubyte pad<hidden=true>;
+        Matrix4 mat4; 
+        Matrix4 mat42<comment="Probably world matrix. idk">;
+        Vector4 vpad[3];
+    }nodes[numNodes]<optimize=false>;
+};
 
 struct CHR {
     ChangeColor(1);
     Header header;
+    
+    FSeek(header.hier_ptr);
+    Hiearchy hierachy(header.numHierarchy)<optimize=false>;
     ChangeColor(1);
     
     FSeek(header.skeleton_ptr);
